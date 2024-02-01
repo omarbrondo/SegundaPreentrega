@@ -46,3 +46,7 @@ button {
 button:hover {
     background-color: #2980b9; /* Cambio de color al pasar el mouse sobre el botón */
 }
+
+h3 {
+    color: red;
+  }

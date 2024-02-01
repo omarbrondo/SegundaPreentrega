@@ -103,10 +103,16 @@ function imprimirMensajeFinal() {
   console.log("EL TOTAL A COBRAR ES 💵 💲" + totalGeneral);
   console.log(`Su pedido es el número: ${numeroPedidoAleatorio}`);
 
-  // Agregar un h3 con el número de pedido aleatorio
-  let h3Pedido = document.createElement("h3");
-  h3Pedido.innerText = `Su pedido es el número: ${numeroPedidoAleatorio}`;
-  document.body.appendChild(h3Pedido);
+  //esto lo hice para que genere un numero aleatorio como para emular un numero de orden 
+
+let pedidoRecuadro = document.createElement("div");
+pedidoRecuadro.style.backgroundColor = "white";
+pedidoRecuadro.style.padding = "10px";
+pedidoRecuadro.style.border = "2px solid red";
+let h3Pedido = document.createElement("h3");
+h3Pedido.innerText = `Su pedido es el número: ${numeroPedidoAleatorio}`;
+pedidoRecuadro.appendChild(h3Pedido);
+document.body.appendChild(pedidoRecuadro);
 }
 
 function generarNumeroAleatorio(min, max) {
