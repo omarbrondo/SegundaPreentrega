@@ -8,40 +8,39 @@ alert("⚠️INSTRUCCIONES⚠️\n ANTES DE HACER CLIC EN EL BOTON NARANJA, ABRI
 
 function obtenerInformacionCliente(i) {
   let nombre = prompt("Nombre de la persona " + (parseInt(i) + 1));
-  console.log("Menu para " + nombre);
-  let edad = prompt("¿Edad de " + nombre + "?");
+  console.log("Menu para " + nombre.toUpperCase());
+  let edad = prompt("¿Edad de " + nombre.toUpperCase() + "?");
   return { nombre, edad };
 }
+
+// Define objetos para representar los elementos del menú
+const menuComida = {
+  1: { nombre: "Hamburguesa con queso", precio: 4000 },
+  2: { nombre: "Ensalada", precio: 3000 },
+  3: { nombre: "Arroz con pollo", precio: 2000 },
+};
+
+const menuBebida = {
+  1: { nombre: "Vaso de agua", precio: 0 },
+  2: { nombre: "Gaseosa", precio: 500 },
+  3: { nombre: "Cerveza", precio: 2000 },
+  4: { nombre: "Mate", precio: 20 },
+};
 
 function obtenerComida(nombre) {
   let comida;
   do {
     comida = prompt(
       "¿Qué comerá hoy " +
-        nombre +
+        nombre.toUpperCase() +
         "? \n Seleccione Comida \n 1) Hamburguesa con queso 🍔💲4000  \n 2) Ensalada 🥗💲3000  \n 3) Arroz con pollo 🍚💲2000  \n 4) Listo! ✅"
     );
 
-    if (parseInt(comida) !== 4) {
-      console.log(nombre + " pidió para comer la opción " + comida);
-    }
+    console.log("Valor de comida:", comida);
 
-    switch (parseInt(comida)) {
-      case 1:
-        sumaComida += 4000;
-        break;
-      case 2:
-        sumaComida += 3000;
-        break;
-      case 3:
-        sumaComida += 2000;
-        break;
-      case 4:
-        alert("Perfecto! Ahora hay que elegir las bebidas 😜");
-        break;
-      default:
-        alert("❌No existe esa comida❌😐");
-        break;
+    if (parseInt(comida) !== 4) {
+      console.log(nombre.toUpperCase() + " pidió para comer la opción " + menuComida[parseInt(comida)].nombre);
+      sumaComida += menuComida[parseInt(comida)].precio; // Corrección aquí
     }
   } while (parseInt(comida) !== 4);
 }
@@ -51,40 +50,27 @@ function obtenerBebida(nombre, edad) {
   do {
     bebida = prompt(
       "¿Que beberá " +
-        nombre +
+        nombre.toUpperCase() +
         "?\n 1) Vaso de agua 🥛💲0  \n 2) Gaseosa 🥤💲500  \n 3) Cerveza 🍺💲2000  \n 4) Mate 🧉💲20  \n 5) Listo!✅ \n"
     );
+
+    console.log("Valor de bebida:", bebida);
+
     if (parseInt(bebida) !== 5) {
-      console.log(nombre + " pidió para tomar la opción " + bebida);
-    }
-    if (edad < 18 && parseInt(bebida) == 3) {
-      console.log("Es menor de edad, no puede tomar cerveza");
+      if (edad < 18 && parseInt(bebida) == 3) {
+        alert("🔞"+nombre.toUpperCase() + " Es menor de edad, no puede tomar cerveza🔞");
+        console.log("🔞Es menor de edad, no puede tomar cerveza🔞");
+      }
+      else{
+        console.log(nombre.toUpperCase() + " pidió para tomar la opción " + menuBebida[parseInt(bebida)].nombre);
+        sumaBebida += menuBebida[parseInt(bebida)].precio;
+      }
     }
 
-    switch (parseInt(bebida)) {
-      case 1:
-        sumaBebida += 0;
-        break;
-      case 2:
-        sumaBebida += 500;
-        break;
-      case 3:
-        if (edad >= 18) {
-          sumaBebida += 2000;
-        } else {
-          alert(nombre + " NO TIENE LA EDAD PARA TOMAR CERVEZA!🔞");
-        }
-        break;
-      case 4:
-        sumaBebida += 20;
-        break;
-      case 5:
-        alert("😁 SU PEDIDO YA FUE REGISTRADO! 😁");
-        break;
-      default:
-        alert("❌No existe esa bebida❌ 😐");
-        break;
-    }
+    /*if (edad < 18 && parseInt(bebida) == 3) {
+      alert("🔞"+nombre.toUpperCase() + " Es menor de edad, no puede tomar cerveza🔞");
+      console.log("🔞Es menor de edad, no puede tomar cerveza🔞");
+    }*/
   } while (parseInt(bebida) !== 5);
 }
 
