@@ -90,22 +90,27 @@ function imprimirSubtotal(nombre, tipo, pedido) {
 }
 
 function imprimirMensajeFinal() {
-  //if (pedidos.length > 0) {
-    document.querySelector("img").src = "img/OIG (1).jpg";
-    document.querySelector("h1").innerText = "Su pedido está preparandose!";
-    document.querySelector("button").hidden = true;
+  document.querySelector("img").src = "img/OIG (1).jpg";
+  document.querySelector("h1").innerText = "Su pedido está preparandose!";
+  document.querySelector("button").hidden = true;
 
-    let totalGeneral = pedidos.reduce((total, pedido) => {
-      return total + pedido.reduce((subtotal, item) => subtotal + item.precio, 0);
-    }, 0);
+  let totalGeneral = pedidos.reduce((total, pedido) => {
+    return total + pedido.reduce((subtotal, item) => subtotal + item.precio, 0);
+  }, 0);
 
-    console.log("EL TOTAL A COBRAR ES 💵 💲" + totalGeneral);
-  /*} else {
-    document.querySelector("img").src = "img/OIG (2).jpg";
-    document.querySelector("h1").innerText = "Que lastima que te vas sin comer nada!";
-    document.querySelector("button").hidden = true;
-    console.log("El cliente se va sin consumir");
-  }*/
+  let numeroPedidoAleatorio = generarNumeroAleatorio(10, 150); // 
+
+  console.log("EL TOTAL A COBRAR ES 💵 💲" + totalGeneral);
+  console.log(`Su pedido es el número: ${numeroPedidoAleatorio}`);
+
+  // Agregar un h3 con el número de pedido aleatorio
+  let h3Pedido = document.createElement("h3");
+  h3Pedido.innerText = `Su pedido es el número: ${numeroPedidoAleatorio}`;
+  document.body.appendChild(h3Pedido);
+}
+
+function generarNumeroAleatorio(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
 botonPedido.addEventListener("click", function () {
