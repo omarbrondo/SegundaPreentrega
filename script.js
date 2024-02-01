@@ -12,17 +12,24 @@ function obtenerInformacionCliente(i) {
 
 // Define objetos para representar los elementos del menú
 const menuComida = {
-  1: { nombre: "Hamburguesa con queso", precio: 4000 },
-  2: { nombre: "Ensalada", precio: 3000 },
-  3: { nombre: "Arroz con pollo", precio: 2000 },
+  1: { item: "Hamburguesa con queso", precio: 4000 },
+  2: { item: "Ensalada", precio: 3000 },
+  3: { item: "Arroz con pollo", precio: 2000 },
 };
 
 const menuBebida = {
-  1: { nombre: "Vaso de agua", precio: 0 },
-  2: { nombre: "Gaseosa", precio: 500 },
-  3: { nombre: "Cerveza", precio: 2000 },
-  4: { nombre: "Mate", precio: 20 },
+  1: { item: "Vaso de agua", precio: 0 },
+  2: { item: "Gaseosa", precio: 500 },
+  3: { item: "Cerveza", precio: 2000 },
+  4: { item: "Mate", precio: 20 },
 };
+
+// Función de orden superior para calcular el subtotal de una categoría
+function calcularSubtotalCategoria(pedido, categoria) {
+  return pedido
+    .filter(item => item.tipo === categoria)
+    .reduce((total, item) => total + item.precio, 0);
+}
 
 function obtenerComida(nombre) {
   let pedidoComida = [];
@@ -37,9 +44,12 @@ function obtenerComida(nombre) {
 
     if (parseInt(comida) !== 4) {
       pedidoComida.push({
-        nombre: menuComida[parseInt(comida)].nombre,
+        item: menuComida[parseInt(comida)].item,
         precio: menuComida[parseInt(comida)].precio,
+        tipo: "Comida",
       });
+      console.log(nombre.toUpperCase() +" Eligió para comer " + menuComida[parseInt(comida)].item)
+
     }
   } while (parseInt(comida) !== 4);
 
@@ -62,9 +72,11 @@ function obtenerBebida(nombre, edad) {
         alert("🔞" + nombre.toUpperCase() + " Es menor de edad, no puede tomar cerveza🔞");
       } else {
         pedidoBebida.push({
-          nombre: menuBebida[parseInt(bebida)].nombre,
+          item: menuBebida[parseInt(bebida)].item,
           precio: menuBebida[parseInt(bebida)].precio,
+          tipo: "Bebida",
         });
+        console.log(nombre.toUpperCase() +" Eligió para beber " + menuBebida[parseInt(bebida)].item)
       }
     }
   } while (parseInt(bebida) !== 5);
@@ -73,8 +85,8 @@ function obtenerBebida(nombre, edad) {
 }
 
 function imprimirSubtotal(nombre, tipo, pedido) {
-  let subtotal = pedido.reduce((total, item) => total + item.precio, 0);
-  console.log(`💰Subtotal de ${tipo} para ${nombre}: ${subtotal}`);
+  let subtotal = calcularSubtotalCategoria(pedido, tipo);
+  console.log(`💰Subtotal de ${tipo} para ${nombre.toUpperCase()}: ${subtotal}`);
 }
 
 function imprimirMensajeFinal() {
