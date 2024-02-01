@@ -1,8 +1,5 @@
 let botonPedido = document.querySelector("button");
-let sumaComida = 0;
-let sumaBebida = 0;
-let subtotalComida = 0;
-let subtotalBebida = 0;
+let pedidos = []; // Array para almacenar la información de los pedidos
 
 alert("⚠️INSTRUCCIONES⚠️\n ANTES DE HACER CLIC EN EL BOTON NARANJA, ABRIR LA CONSOLA");
 
@@ -28,7 +25,9 @@ const menuBebida = {
 };
 
 function obtenerComida(nombre) {
+  let pedidoComida = [];
   let comida;
+
   do {
     comida = prompt(
       "¿Qué comerá hoy " +
@@ -36,17 +35,21 @@ function obtenerComida(nombre) {
         "? \n Seleccione Comida \n 1) Hamburguesa con queso 🍔💲4000  \n 2) Ensalada 🥗💲3000  \n 3) Arroz con pollo 🍚💲2000  \n 4) Listo! ✅"
     );
 
-    console.log("Valor de comida:", comida);
-
     if (parseInt(comida) !== 4) {
-      console.log(nombre.toUpperCase() + " pidió para comer la opción " + menuComida[parseInt(comida)].nombre);
-      sumaComida += menuComida[parseInt(comida)].precio; // Corrección aquí
+      pedidoComida.push({
+        nombre: menuComida[parseInt(comida)].nombre,
+        precio: menuComida[parseInt(comida)].precio,
+      });
     }
   } while (parseInt(comida) !== 4);
+
+  return { tipo: "Comida", pedido: pedidoComida };
 }
 
 function obtenerBebida(nombre, edad) {
+  let pedidoBebida = [];
   let bebida;
+
   do {
     bebida = prompt(
       "¿Que beberá " +
@@ -54,37 +57,37 @@ function obtenerBebida(nombre, edad) {
         "?\n 1) Vaso de agua 🥛💲0  \n 2) Gaseosa 🥤💲500  \n 3) Cerveza 🍺💲2000  \n 4) Mate 🧉💲20  \n 5) Listo!✅ \n"
     );
 
-    console.log("Valor de bebida:", bebida);
-
     if (parseInt(bebida) !== 5) {
       if (edad < 18 && parseInt(bebida) == 3) {
-        alert("🔞"+nombre.toUpperCase() + " Es menor de edad, no puede tomar cerveza🔞");
-        console.log("🔞Es menor de edad, no puede tomar cerveza🔞");
-      }
-      else{
-        console.log(nombre.toUpperCase() + " pidió para tomar la opción " + menuBebida[parseInt(bebida)].nombre);
-        sumaBebida += menuBebida[parseInt(bebida)].precio;
+        alert("🔞" + nombre.toUpperCase() + " Es menor de edad, no puede tomar cerveza🔞");
+      } else {
+        pedidoBebida.push({
+          nombre: menuBebida[parseInt(bebida)].nombre,
+          precio: menuBebida[parseInt(bebida)].precio,
+        });
       }
     }
-
-    /*if (edad < 18 && parseInt(bebida) == 3) {
-      alert("🔞"+nombre.toUpperCase() + " Es menor de edad, no puede tomar cerveza🔞");
-      console.log("🔞Es menor de edad, no puede tomar cerveza🔞");
-    }*/
   } while (parseInt(bebida) !== 5);
+
+  return { tipo: "Bebida", pedido: pedidoBebida };
 }
 
-function imprimirSubtotal(nombre, tipo, subtotal) {
+function imprimirSubtotal(nombre, tipo, pedido) {
+  let subtotal = pedido.reduce((total, item) => total + item.precio, 0);
   console.log(`💰Subtotal de ${tipo} para ${nombre}: ${subtotal}`);
 }
 
-function imprimirMensajeFinal(subtotalComida, subtotalBebida) {
-  if (subtotalComida || subtotalBebida > 0) {
+function imprimirMensajeFinal() {
+  if (pedidos.length > 0) {
     document.querySelector("img").src = "img/OIG (1).jpg";
     document.querySelector("h1").innerText = "Su pedido está preparandose!";
     document.querySelector("button").hidden = true;
 
-    console.log("EL TOTAL A COBRAR ES 💵 💲" + (subtotalComida + subtotalBebida));
+    let totalGeneral = pedidos.reduce((total, pedido) => {
+      return total + pedido.reduce((subtotal, item) => subtotal + item.precio, 0);
+    }, 0);
+
+    console.log("EL TOTAL A COBRAR ES 💵 💲" + totalGeneral);
   } else {
     document.querySelector("img").src = "img/OIG (2).jpg";
     document.querySelector("h1").innerText = "Que lastima que te vas sin comer nada!";
@@ -100,15 +103,14 @@ botonPedido.addEventListener("click", function () {
   for (let i = 0; i < personas; i++) {
     const { nombre, edad } = obtenerInformacionCliente(i);
 
-    obtenerComida(nombre);
-    obtenerBebida(nombre, edad);
+    let pedidoComida = obtenerComida(nombre);
+    let pedidoBebida = obtenerBebida(nombre, edad);
 
-    imprimirSubtotal(nombre, "Comida", sumaComida);
-    imprimirSubtotal(nombre, "Bebida", sumaBebida);
+    imprimirSubtotal(nombre, pedidoComida.tipo, pedidoComida.pedido);
+    imprimirSubtotal(nombre, pedidoBebida.tipo, pedidoBebida.pedido);
 
-    subtotalComida += sumaComida;
-    subtotalBebida += sumaBebida;
+    pedidos.push([...pedidoComida.pedido, ...pedidoBebida.pedido]);
   }
 
-  imprimirMensajeFinal(subtotalComida, subtotalBebida);
+  imprimirMensajeFinal();
 });
