@@ -90,7 +90,7 @@ function imprimirSubtotal(nombre, tipo, pedido) {
 }
 
 function imprimirMensajeFinal() {
-  if (pedidos.length > 0) {
+  //if (pedidos.length > 0) {
     document.querySelector("img").src = "img/OIG (1).jpg";
     document.querySelector("h1").innerText = "Su pedido está preparandose!";
     document.querySelector("button").hidden = true;
@@ -100,12 +100,12 @@ function imprimirMensajeFinal() {
     }, 0);
 
     console.log("EL TOTAL A COBRAR ES 💵 💲" + totalGeneral);
-  } else {
+  /*} else {
     document.querySelector("img").src = "img/OIG (2).jpg";
     document.querySelector("h1").innerText = "Que lastima que te vas sin comer nada!";
     document.querySelector("button").hidden = true;
     console.log("El cliente se va sin consumir");
-  }
+  }*/
 }
 
 botonPedido.addEventListener("click", function () {
@@ -123,6 +123,12 @@ botonPedido.addEventListener("click", function () {
 
     pedidos.push([...pedidoComida.pedido, ...pedidoBebida.pedido]);
   }
+  pedidos.forEach((pedido, index) => {
+    console.log(`Detalles del pedido ${index + 1}:`);
+    pedido.forEach((item, itemIndex) => {
+      console.log(`  ${item.tipo} ${itemIndex + 1}: ${item.item} - Precio: ${item.precio}`);
+    });
+  });
 
   imprimirMensajeFinal();
 });
