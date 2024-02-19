@@ -57,10 +57,11 @@ function obtenerBebida(nombre, edad) {
     );
 
     if (parseInt(bebida) !== 5) {
-      if (edad < 18 && parseInt(bebida) === 3) {
+      const { item, precio } = menuBebida[parseInt(bebida)];
+      const puedeTomarCerveza = edad >= 18 ? true : false; // Operador ternario para determinar si puede tomar cerveza
+      if (!puedeTomarCerveza && parseInt(bebida) === 3) {
         alert(`🔞 ${nombre.toUpperCase()} Es menor de edad, no puede tomar cerveza 🔞`);
       } else {
-        const { item, precio } = menuBebida[parseInt(bebida)];
         pedidoBebida.push({ item, precio, tipo: "Bebida" });
         console.log(`${nombre.toUpperCase()} Eligió para beber ${item}`);
       }
