@@ -1,5 +1,5 @@
-let botonPedido = document.querySelector("button");
-let pedidos = []; // Array para almacenar la información de los pedidos
+const botonPedido = document.querySelector("button");
+const pedidos = []; // Array para almacenar la información de los pedidos
 
 alert("⚠️INSTRUCCIONES⚠️\n ANTES DE HACER CLIC EN EL BOTON NARANJA, ABRIR LA CONSOLA");
 
@@ -58,7 +58,7 @@ function obtenerBebida(nombre, edad) {
 
     if (parseInt(bebida) !== 5) {
       const { item, precio } = menuBebida[parseInt(bebida)];
-      const puedeTomarCerveza = edad >= 18 ? true : false; // Operador ternario para determinar si puede tomar cerveza
+      const puedeTomarCerveza = edad >= 18; // Optimización: Reducción de código
       if (!puedeTomarCerveza && parseInt(bebida) === 3) {
         alert(`🔞 ${nombre.toUpperCase()} Es menor de edad, no puede tomar cerveza 🔞`);
       } else {
@@ -78,7 +78,7 @@ function imprimirSubtotal({ nombre, tipo, pedido }) {
 
 function imprimirMensajeFinal() {
   document.querySelector("img").src = "img/OIG (1).jpg";
-  document.querySelector("h1").innerText = "Su pedido está preparandose!";
+  document.querySelector("h1").innerText = "Su pedido está preparándose!";
   botonPedido.hidden = true;
 
   const totalGeneral = pedidos.reduce((total, pedido) => total + pedido.reduce((subtotal, item) => subtotal + item.precio, 0), 0);
@@ -109,20 +109,14 @@ botonPedido.addEventListener("click", function () {
   for (let i = 0; i < personas; i++) {
     const { nombre, edad } = obtenerInformacionCliente(i);
 
-    const pedidoComida = obtenerComida(nombre);
-    const pedidoBebida = obtenerBebida(nombre, edad);
+    const { pedido: pedidoComida } = obtenerComida(nombre); // Optimización: Eliminación de variable redundante
+    const { pedido: pedidoBebida } = obtenerBebida(nombre, edad); // Optimización: Eliminación de variable redundante
 
-    imprimirSubtotal({ nombre, ...pedidoComida });
-    imprimirSubtotal({ nombre, ...pedidoBebida });
+    imprimirSubtotal({ nombre, tipo: "Comida", pedido: pedidoComida });
+    imprimirSubtotal({ nombre, tipo: "Bebida", pedido: pedidoBebida });
 
-    pedidos.push([...pedidoComida.pedido, ...pedidoBebida.pedido]);
+    pedidos.push([...pedidoComida, ...pedidoBebida]);
   }
-  pedidos.forEach((pedido, index) => {
-    console.log(`Detalles del pedido ${index + 1}:`);
-    pedido.forEach((item, itemIndex) => {
-      console.log(`  ${item.tipo} ${itemIndex + 1}: ${item.item} - Precio: ${item.precio}`);
-    });
-  });
 
   imprimirMensajeFinal();
 });
