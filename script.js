@@ -4,9 +4,9 @@ let pedidos = []; // Array para almacenar la información de los pedidos
 alert("⚠️INSTRUCCIONES⚠️\n ANTES DE HACER CLIC EN EL BOTON NARANJA, ABRIR LA CONSOLA");
 
 function obtenerInformacionCliente(i) {
-  let nombre = prompt("Nombre de la persona " + (parseInt(i) + 1));
-  console.log("Menu para " + nombre.toUpperCase());
-  let edad = prompt("¿Edad de " + nombre.toUpperCase() + "?");
+  const nombre = prompt(`Nombre de la persona ${parseInt(i) + 1}`);
+  console.log(`Menu para ${nombre.toUpperCase()}`);
+  const edad = prompt(`¿Edad de ${nombre.toUpperCase()}?`);
   return { nombre, edad };
 }
 
@@ -25,31 +25,22 @@ const menuBebida = {
 };
 
 // Función de orden superior para calcular el subtotal de una categoría
-function calcularSubtotalCategoria(pedido, categoria) {
-  return pedido
-    .filter(item => item.tipo === categoria)
-    .reduce((total, item) => total + item.precio, 0);
-}
+const calcularSubtotalCategoria = (pedido, categoria) =>
+  pedido.filter(item => item.tipo === categoria).reduce((total, item) => total + item.precio, 0);
 
 function obtenerComida(nombre) {
-  let pedidoComida = [];
+  const pedidoComida = [];
   let comida;
 
   do {
     comida = prompt(
-      "¿Qué comerá hoy " +
-        nombre.toUpperCase() +
-        "? \n Seleccione Comida \n 1) Hamburguesa con queso 🍔💲4000  \n 2) Ensalada 🥗💲3000  \n 3) Arroz con pollo 🍚💲2000  \n 4) Listo! ✅"
+      `¿Qué comerá hoy ${nombre.toUpperCase()}? \n Seleccione Comida \n 1) Hamburguesa con queso 🍔💲4000  \n 2) Ensalada 🥗💲3000  \n 3) Arroz con pollo 🍚💲2000  \n 4) Listo! ✅`
     );
 
     if (parseInt(comida) !== 4) {
-      pedidoComida.push({
-        item: menuComida[parseInt(comida)].item,
-        precio: menuComida[parseInt(comida)].precio,
-        tipo: "Comida",
-      });
-      console.log(nombre.toUpperCase() +" Eligió para comer " + menuComida[parseInt(comida)].item)
-
+      const { item, precio } = menuComida[parseInt(comida)];
+      pedidoComida.push({ item, precio, tipo: "Comida" });
+      console.log(`${nombre.toUpperCase()} Eligió para comer ${item}`);
     }
   } while (parseInt(comida) !== 4);
 
@@ -57,26 +48,21 @@ function obtenerComida(nombre) {
 }
 
 function obtenerBebida(nombre, edad) {
-  let pedidoBebida = [];
+  const pedidoBebida = [];
   let bebida;
 
   do {
     bebida = prompt(
-      "¿Que beberá " +
-        nombre.toUpperCase() +
-        "?\n 1) Vaso de agua 🥛💲0  \n 2) Gaseosa 🥤💲500  \n 3) Cerveza 🍺💲2000  \n 4) Mate 🧉💲20  \n 5) Listo!✅ \n"
+      `¿Que beberá ${nombre.toUpperCase()}? \n 1) Vaso de agua 🥛💲0  \n 2) Gaseosa 🥤💲500  \n 3) Cerveza 🍺💲2000  \n 4) Mate 🧉💲20  \n 5) Listo!✅ \n`
     );
 
     if (parseInt(bebida) !== 5) {
-      if (edad < 18 && parseInt(bebida) == 3) {
-        alert("🔞" + nombre.toUpperCase() + " Es menor de edad, no puede tomar cerveza🔞");
+      if (edad < 18 && parseInt(bebida) === 3) {
+        alert(`🔞 ${nombre.toUpperCase()} Es menor de edad, no puede tomar cerveza 🔞`);
       } else {
-        pedidoBebida.push({
-          item: menuBebida[parseInt(bebida)].item,
-          precio: menuBebida[parseInt(bebida)].precio,
-          tipo: "Bebida",
-        });
-        console.log(nombre.toUpperCase() +" Eligió para beber " + menuBebida[parseInt(bebida)].item)
+        const { item, precio } = menuBebida[parseInt(bebida)];
+        pedidoBebida.push({ item, precio, tipo: "Bebida" });
+        console.log(`${nombre.toUpperCase()} Eligió para beber ${item}`);
       }
     }
   } while (parseInt(bebida) !== 5);
@@ -84,35 +70,31 @@ function obtenerBebida(nombre, edad) {
   return { tipo: "Bebida", pedido: pedidoBebida };
 }
 
-function imprimirSubtotal(nombre, tipo, pedido) {
-  let subtotal = calcularSubtotalCategoria(pedido, tipo);
+function imprimirSubtotal({ nombre, tipo, pedido }) {
+  const subtotal = calcularSubtotalCategoria(pedido, tipo);
   console.log(`💰Subtotal de ${tipo} para ${nombre.toUpperCase()}: ${subtotal}`);
 }
 
 function imprimirMensajeFinal() {
   document.querySelector("img").src = "img/OIG (1).jpg";
   document.querySelector("h1").innerText = "Su pedido está preparandose!";
-  document.querySelector("button").hidden = true;
+  botonPedido.hidden = true;
 
-  let totalGeneral = pedidos.reduce((total, pedido) => {
-    return total + pedido.reduce((subtotal, item) => subtotal + item.precio, 0);
-  }, 0);
+  const totalGeneral = pedidos.reduce((total, pedido) => total + pedido.reduce((subtotal, item) => subtotal + item.precio, 0), 0);
 
-  let numeroPedidoAleatorio = generarNumeroAleatorio(10, 150); // 
+  const numeroPedidoAleatorio = generarNumeroAleatorio(10, 150); 
 
   console.log("EL TOTAL A COBRAR ES 💵 💲" + totalGeneral);
   console.log(`Su pedido es el número: ${numeroPedidoAleatorio}`);
 
-  //esto lo hice para que genere un numero aleatorio como para emular un numero de orden 
-
-let pedidoRecuadro = document.createElement("div");
-pedidoRecuadro.style.backgroundColor = "white";
-pedidoRecuadro.style.padding = "10px";
-pedidoRecuadro.style.border = "2px solid red";
-let h3Pedido = document.createElement("h3");
-h3Pedido.innerText = `Su pedido es el número: ${numeroPedidoAleatorio}`;
-pedidoRecuadro.appendChild(h3Pedido);
-document.body.appendChild(pedidoRecuadro);
+  const pedidoRecuadro = document.createElement("div");
+  pedidoRecuadro.style.backgroundColor = "white";
+  pedidoRecuadro.style.padding = "10px";
+  pedidoRecuadro.style.border = "2px solid red";
+  const h3Pedido = document.createElement("h3");
+  h3Pedido.innerText = `Su pedido es el número: ${numeroPedidoAleatorio}`;
+  pedidoRecuadro.appendChild(h3Pedido);
+  document.body.appendChild(pedidoRecuadro);
 }
 
 function generarNumeroAleatorio(min, max) {
@@ -121,16 +103,16 @@ function generarNumeroAleatorio(min, max) {
 
 botonPedido.addEventListener("click", function () {
   console.log("⚠️ATENCIÓN COCINEROS! HAY UN NUEVO CLIENTE!⚠️");
-  let personas = prompt("¿Cuantas personas son? 👨‍👩‍👦‍👦 ");
+  const personas = prompt("¿Cuantas personas son? 👨‍👩‍👦‍👦 ");
 
   for (let i = 0; i < personas; i++) {
     const { nombre, edad } = obtenerInformacionCliente(i);
 
-    let pedidoComida = obtenerComida(nombre);
-    let pedidoBebida = obtenerBebida(nombre, edad);
+    const pedidoComida = obtenerComida(nombre);
+    const pedidoBebida = obtenerBebida(nombre, edad);
 
-    imprimirSubtotal(nombre, pedidoComida.tipo, pedidoComida.pedido);
-    imprimirSubtotal(nombre, pedidoBebida.tipo, pedidoBebida.pedido);
+    imprimirSubtotal({ nombre, ...pedidoComida });
+    imprimirSubtotal({ nombre, ...pedidoBebida });
 
     pedidos.push([...pedidoComida.pedido, ...pedidoBebida.pedido]);
   }
