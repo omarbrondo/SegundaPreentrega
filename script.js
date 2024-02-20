@@ -1,16 +1,52 @@
 const botonPedido = document.querySelector("button");
-const pedidos = []; // Array para almacenar la información de los pedidos
+const pedidos = [];
 
 alert("⚠️INSTRUCCIONES⚠️\n ANTES DE HACER CLIC EN EL BOTON NARANJA, ABRIR LA CONSOLA");
 
-function obtenerInformacionCliente(i) {
-  const nombre = prompt(`Nombre de la persona ${parseInt(i) + 1}`);
-  console.log(`Menu para ${nombre.toUpperCase()}`);
-  const edad = prompt(`¿Edad de ${nombre.toUpperCase()}?`);
-  return { nombre, edad };
+function crearElemento(tag, contenido) {
+  const elemento = document.createElement(tag);
+  elemento.textContent = contenido;
+  return elemento;
 }
 
-// Define objetos para representar los elementos del menú
+function crearFormularioCliente(i) {
+  const formularioCliente = document.createElement("form");
+
+  const nombreLabel = crearElemento("label", `Nombre de la persona ${parseInt(i) + 1}`);
+  formularioCliente.appendChild(nombreLabel);
+
+  const nombreInput = document.createElement("input");
+  nombreInput.setAttribute("type", "text");
+  formularioCliente.appendChild(nombreInput);
+
+  formularioCliente.appendChild(document.createElement("br")); 
+
+  const edadLabel = crearElemento("label", `Edad de la persona ${parseInt(i) + 1}`);
+  formularioCliente.appendChild(edadLabel);
+
+  const edadInput = document.createElement("input");
+  edadInput.setAttribute("type", "number");
+  formularioCliente.appendChild(edadInput);
+
+  formularioCliente.appendChild(document.createElement("br")); 
+
+  const botonEnviar = document.createElement("button");
+  botonEnviar.textContent = "Enviar";
+  formularioCliente.appendChild(botonEnviar);
+
+  document.body.appendChild(formularioCliente);
+
+  return new Promise(resolve => {
+    formularioCliente.addEventListener("submit", function(event) {
+      event.preventDefault();
+      const nombre = nombreInput.value;
+      const edad = edadInput.value;
+      formularioCliente.remove();
+      resolve({ nombre, edad, comida: [], bebida: [] });
+    });
+  });
+}
+
 const menuComida = {
   1: { item: "Hamburguesa con queso", precio: 4000 },
   2: { item: "Ensalada", precio: 3000 },
@@ -24,7 +60,6 @@ const menuBebida = {
   4: { item: "Mate", precio: 20 },
 };
 
-// Función de orden superior para calcular el subtotal de una categoría
 const calcularSubtotalCategoria = (pedido, categoria) =>
   pedido.filter(item => item.tipo === categoria).reduce((total, item) => total + item.precio, 0);
 
@@ -44,7 +79,7 @@ function obtenerComida(nombre) {
     }
   } while (parseInt(comida) !== 4);
 
-  return { tipo: "Comida", pedido: pedidoComida };
+  return pedidoComida;
 }
 
 function obtenerBebida(nombre, edad) {
@@ -58,7 +93,7 @@ function obtenerBebida(nombre, edad) {
 
     if (parseInt(bebida) !== 5) {
       const { item, precio } = menuBebida[parseInt(bebida)];
-      const puedeTomarCerveza = edad >= 18; // Optimización: Reducción de código
+      const puedeTomarCerveza = edad >= 18; 
       if (!puedeTomarCerveza && parseInt(bebida) === 3) {
         alert(`🔞 ${nombre.toUpperCase()} Es menor de edad, no puede tomar cerveza 🔞`);
       } else {
@@ -68,7 +103,7 @@ function obtenerBebida(nombre, edad) {
     }
   } while (parseInt(bebida) !== 5);
 
-  return { tipo: "Bebida", pedido: pedidoBebida };
+  return pedidoBebida;
 }
 
 function imprimirSubtotal({ nombre, tipo, pedido }) {
@@ -81,7 +116,11 @@ function imprimirMensajeFinal() {
   document.querySelector("h1").innerText = "Su pedido está preparándose!";
   botonPedido.hidden = true;
 
-  const totalGeneral = pedidos.reduce((total, pedido) => total + pedido.reduce((subtotal, item) => subtotal + item.precio, 0), 0);
+  const totalGeneral = pedidos.reduce((total, pedido) => {
+    const subtotalComida = calcularSubtotalCategoria(pedido.comida, "Comida");
+    const subtotalBebida = calcularSubtotalCategoria(pedido.bebida, "Bebida");
+    return total + subtotalComida + subtotalBebida;
+  }, 0);
 
   const numeroPedidoAleatorio = generarNumeroAleatorio(10, 150); 
 
@@ -104,19 +143,25 @@ function generarNumeroAleatorio(min, max) {
 
 botonPedido.addEventListener("click", function () {
   console.log("⚠️ATENCIÓN COCINEROS! HAY UN NUEVO CLIENTE!⚠️");
-  const personas = prompt("¿Cuantas personas son? 👨‍👩‍👦‍👦 ");
 
-  for (let i = 0; i < personas; i++) {
-    const { nombre, edad } = obtenerInformacionCliente(i);
+  botonPedido.style.display = "none";
+  document.querySelector("img").style.display = "none";
 
-    const { pedido: pedidoComida } = obtenerComida(nombre); // Optimización: Eliminación de variable redundante
-    const { pedido: pedidoBebida } = obtenerBebida(nombre, edad); // Optimización: Eliminación de variable redundante
+  cantidadPersonas = prompt("¿Cuantas personas son? 👨‍👩‍👦‍👦 ");
 
-    imprimirSubtotal({ nombre, tipo: "Comida", pedido: pedidoComida });
-    imprimirSubtotal({ nombre, tipo: "Bebida", pedido: pedidoBebida });
-
-    pedidos.push([...pedidoComida, ...pedidoBebida]);
-  }
-
-  imprimirMensajeFinal();
+  crearFormularioCliente(0).then(procesarFormulario);
 });
+
+function procesarFormulario({ nombre, edad }) {
+  const pedido = { nombre, edad, comida: [], bebida: [] };
+  pedido.comida = obtenerComida(nombre);
+  pedido.bebida = obtenerBebida(nombre, edad);
+  pedidos.push(pedido);
+  
+  if (pedidos.length < cantidadPersonas) {
+    const siguientePersona = pedidos.length;
+    crearFormularioCliente(siguientePersona).then(procesarFormulario);
+  } else {
+    imprimirMensajeFinal();
+  }
+}

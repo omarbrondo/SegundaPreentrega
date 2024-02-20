@@ -50,3 +50,11 @@ button:hover {
 h3 {
     color: red;
   }
+
+  form {
+    background-color: rgba(255, 228, 196, 0.5); /* Color crema con opacidad */
+    padding: 10px; /* Añadir espacio entre elementos */
+    display: flex; /* Utilizamos flexbox para alinear los elementos verticalmente */
+    flex-direction: column; /* Alineamos los elementos en una columna */
+    align-items: center; /* Centramos los elementos horizontalmente */
+  }
